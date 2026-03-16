@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+enum MessageType {
+  RESULT
+  ERROR
+}
+
+model Project {
+  id         String    @id @default(uuid())
+  name       String
+  messages   Message[]
+  sandbox    String    @db.VarChar(64)
+  createdAt  DateTime  @default(now())
+  updateTime DateTime  @updatedAt
+}
+
+model Message {
+  id           String        @id @default(uuid())
+  content      String
+  role         MessageRole
+  type         MessageType
+  codeFragment CodeFragment?
+  projectId    String
+  project      Project       @relation(references: [id], fields: [projectId], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updateTime   DateTime      @updatedAt
+}
+
+model CodeFragment {
+  id         String   @id @default(uuid())
+  messageId  String   @unique
+  message    Message  @relation(references: [id], fields: [messageId], onDelete: Cascade)
+  sandboxURL String
+  sandbox    String   @db.VarChar(64)
+  title      String
+  file       Json
+  createdAt  DateTime @default(now())
+  updateTime DateTime @updatedAt
+}
