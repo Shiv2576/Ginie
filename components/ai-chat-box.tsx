@@ -10,10 +10,8 @@ import {
   IconArrowUp,
   IconLoader2,
   IconPaperclip,
-  IconPlus,
   IconX,
 } from "@tabler/icons-react"
-import { Textarea } from "./ui/textarea"
 import Image from "next/image"
 import { useUploadThing } from "@/lib/uploadthing"
 import { toast } from "sonner"
@@ -48,24 +46,24 @@ export default function AIChatBox({ projectId }: Props) {
     const cleanMessage = message.trim() ?? ""
 
     try {
-      if (!cleanMessage && attachedFile) {
-        toast.error("Type a Message or upload an image")
-      }
+      // if (!cleanMessage && attachedFile) {
+      //   toast.error("Type a Message or upload an image")
+      // }
 
-      const files = [attachedFile as File]
-      const res = await startUpload(files)
+      // const files = [attachedFile as File]
+      // const res = await startUpload(files)
 
-      const url = res?.[0]?.ufsUrl
+      // const url = res?.[0]?.ufsUrl
 
-      if (!projectId) {
-        const res = await apiClient.projects.post()
+      // if (!projectId) {
+      //   const res = await apiClient.projects.post()
 
-        if (res) {
-          router.push(`/projects/${res.data.id}`)
-        }
-      }
+      //   if (res) {
+      //     router.push(`/projects/${res.data.id}`)
+      //   }
+      // }
 
-      await apiClient.messages.post({})
+      await apiClient.messages.post({ message: cleanMessage })
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Upload Message")
     } finally {
@@ -139,7 +137,7 @@ export default function AIChatBox({ projectId }: Props) {
             name="message"
             control={form.control}
             render={({ field }) => (
-              <Textarea
+              <textarea
                 {...field}
                 placeholder="Ask Genie AI..."
                 onKeyDown={handleKeydown}
@@ -150,6 +148,7 @@ export default function AIChatBox({ projectId }: Props) {
                   outline: "none",
                   resize: "none",
                   padding: "0",
+                  margin: "0",
                   minHeight: "80px",
                   maxHeight: "200px",
                   width: "100%",
@@ -157,9 +156,12 @@ export default function AIChatBox({ projectId }: Props) {
                   lineHeight: "1.6",
                   color: "white",
                   display: "block",
+                  fontFamily: "inherit",
+                  letterSpacing: "normal",
+                  textIndent: "0",
+                  WebkitAppearance: "none",
+                  appearance: "none",
                 }}
-                // inline style for placeholder since Tailwind may not apply
-                onFocus={(e) => (e.target.style.outline = "none")}
               />
             )}
           />
